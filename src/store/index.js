@@ -2,8 +2,11 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 //import ws from './utils/ws'
 import pylody from './modules/pylody';
-//import pylodyWS from './plugins/pylodyWS';
+//import pylodyWebSocket from './plugins/pylodyWS';
+
 Vue.use(Vuex)
+
+//const pylodyWS = pylodyWebSocket //createPylodyWebSocketPlugin(pylodyWebSocket)
 
 export default new Vuex.Store({
   
@@ -15,6 +18,8 @@ export default new Vuex.Store({
     }
   },
   mutations: {
+    
+    /*
     SOCKET_ONOPEN (state, event)  {
       console.log(event)
       Vue.prototype.$socket = event.currentTarget
@@ -41,13 +46,17 @@ export default new Vuex.Store({
     },
     SOCKET_RECONNECT_ERROR(state) {
       state.socket.reconnectError = true;
-    },
+    },*/
+
   },
   actions: {
   },
   modules: {
     pylody
   },
+  plugins: [
+    //pylodyWS
+  ]
  
 
 })

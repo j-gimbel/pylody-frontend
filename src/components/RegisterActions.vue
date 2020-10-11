@@ -23,8 +23,8 @@
     methods: {
       
       senddata() {
-        console.log("sending")
-        this.$socket.send(JSON.stringify({'command':'getLastUid'}))
+        console.log("sending",this)
+        this.$store.sockets.send('pylody',JSON.stringify({'command':'getLastUid'}))
       }
       
     }

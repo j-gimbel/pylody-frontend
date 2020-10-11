@@ -2,54 +2,58 @@ import axios from 'axios';
 
 
 const state = {
-    timerID:null,
-    currentRfidUID : 0,
-    oldRfidUID : 0
-  };
-  
-  const getters = {
-  
-  };
-  
-  const actions = {
-   async startPolling({state,commit } ) {
+  timerID: null,
+  currentRfidUID: 0,
+  oldRfidUID: 0
+};
+
+const getters = {
+
+};
+
+const actions = {
+  async startPolling({ state, commit }) {
     console.log("start...")
-   
+
     function poll() {
-      return axios.get("http://192.168.178.2:5000/rfid").then(response=> {
-        commit('handlePollResponse',response.data);
-      }).catch(function(err) {
-       console.log(err)
+      return axios.get("http://192.168.178.2:5000/rfid").then(response => {
+        commit('handlePollResponse', response.data);
+      }).catch(function (err) {
+        console.log(err)
       })
     }
     state.timerID = setInterval(
       poll
-     , 1000);
+      , 1000);
 
-   }
-  };
+  }
+};
 
-  
-  const mutations = {
-    handlePollResponse(state,data) {
-      state.currentRfidUID = data
-      if (state.currentRfidUID != state.oldRfidUID) {
-        alert("new UID")
-        state.oldRfidUID = state.currentRfidUID
-      }
-      console.log(data)
-    },
 
-    newRfidUid (state,uid) {
-      console.log(state,uid)
+const mutations = {
+
+  handlePollResponse(state, data) {
+    state.currentRfidUID = data
+    if (state.currentRfidUID != state.oldRfidUID) {
+      alert("new UID")
+      state.oldRfidUID = state.currentRfidUID
     }
-  };
-  
-  export default {
-    namespaced: true,
-    state,
-    getters,
-    actions,
-    mutations
-  };
-  
+    console.log(data)
+  },
+
+  newRfidUid(state, uid) {
+    console.log(state, uid)
+  },
+
+  handleMessage(state,data) {
+    console.log("handle message",state,data)
+  }
+};
+
+export default {
+  namespaced: true,
+  state,
+  getters,
+  actions,
+  mutations
+};
