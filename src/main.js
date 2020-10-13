@@ -3,44 +3,20 @@ import App from './App.vue'
 import vuetify from './plugins/vuetify';
 import store from './store'
 Vue.config.productionTip = false
+import VueSocketIO from 'vue-socket.io'
+import SocketIO from 'socket.io-client'
 
-import VueNativeSock from 'vue-native-websocket'
-Vue.use(VueNativeSock, 'ws://192.168.178.2:6680/mopidy/ws', { connectManually: true// (Boolean) whether to reconnect automatically (false)
-//reconnectionAttempts: 5, // (Number) number of reconnection attempts before giving up (Infinity),
-//reconnectionDelay: 3000 // (Number) how long to initially wait before attempting a new (1000) })
-});
-
-
-class VueNativeSockManager {
-  constructor(vueInstance) {
-    this.v = vueInstance
-    this.sockets = {}
-  }
-   
-  addWebSocket (name,uri,settings) {
-    this.v.$connect(uri,settings)
-    this.sockets[name] = {
-      instance : this.v.$socket,
-      settings : settings
+const options = { path: '/ws/socket.io' }; //Options object to pass into SocketIO
+Vue.use(new VueSocketIO({
+    debug: true,
+    connection: SocketIO('http://192.168.178.2:5000', options), //options object is Optional
+    vuex: {
+      store,
+      actionPrefix: "SOCKET_",
+      mutationPrefix: "SOCKET_"
     }
-    this.sockets[name].instance.onmessage = message => { 
-      console.log(this,message) 
-      console.log(this.sockets[name].settings.format)
-      let data = message.data
-      if (this.sockets[name].settings.format == "json") {
-        data = JSON.parse(data)
-      }
-      this.v.$store.commit("pylody/handleMessage",data)
-    }
-  }
-
-  send(name,message) {
-    this.sockets[name].instance.send(message)
-
-  }
-
-}
-
+  })
+);
 
 
 
@@ -50,14 +26,10 @@ new Vue({
   render: h => h(App),
   created: function () {
     console.log("created",this)
-    const vueNativeSockManager = new VueNativeSockManager(this)
+    /*const vueNativeSockManager = new VueNativeSockManager(this)
     vueNativeSockManager.addWebSocket('pylody','ws://192.168.178.2:5000/ws', {format: 'json'})
-    this.$store.sockets = vueNativeSockManager
-    /*this.$connect('ws://192.168.178.2:5000/ws', { format: 'json', store:store})
-    this.$store.ws1 = this.$socket
-    this.$connect('ws://192.168.178.2:6680/mopidy/ws', { format: 'json', store:store})
-    this.$store.ws2 = this.$socket
-    this.$store.ws2.onmessage = data => { console.log(data) }*/
+    this.$store.sockets = vueNativeSockManager*/
+   
     
   }
 }).$mount('#app')
