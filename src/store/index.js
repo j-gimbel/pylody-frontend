@@ -1,24 +1,39 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-//import ws from './utils/ws'
 import pylody from './modules/pylody';
-//import pylodyWebSocket from './plugins/pylodyWS';
-
 Vue.use(Vuex)
-
-//const pylodyWS = pylodyWebSocket //createPylodyWebSocketPlugin(pylodyWebSocket)
-
 export default new Vuex.Store({
-  
+
   state: {
-    socket: {
-      isConnected: false,
-      message: '',
-      reconnectError: false,
+    //socket: {}
+    uid: null,
+    action: {
+      'uid': null,
+      'mopidy_uri': "",
+      settings: {}
+
     }
   },
   mutations: {
-    
+
+    SOCKET_ONOPEN(state, event) {
+      console.log("SOCKET_ONOPEN", event)
+    },
+    SOCKET_newUID(state, message) {
+      console.log("SOCKET_newUID", message)
+      console.log(this, message)
+      message = JSON.parse(message)
+      state.uid = message.uid
+      state.action = message.action
+    },
+
+    setSocket(state, socket) {
+      state.socket = socket
+    },
+    testMessage(state, message) {
+      state.socket.emit('clientQuestion', message)
+    }
+
     /*
     SOCKET_ONOPEN (state, event)  {
       console.log(event)
@@ -50,6 +65,7 @@ export default new Vuex.Store({
 
   },
   actions: {
+
   },
   modules: {
     pylody
@@ -57,6 +73,6 @@ export default new Vuex.Store({
   plugins: [
     //pylodyWS
   ]
- 
+
 
 })
